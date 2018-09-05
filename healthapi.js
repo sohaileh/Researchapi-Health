@@ -7,9 +7,9 @@ const fs = require('fs');
 const app = express();
 
 //server listen
-app.listen(3000, function (req, res) {
+app.listen(9004, function (req, res) {
 });
-console.log("server is listening at port 3000");
+console.log("server is listening at port 9004");
 
 //body parser code middle wares
 app.use(bodyParser.urlencoded({
@@ -26,14 +26,13 @@ app.use(function (req, res, next) {
 ////using get route
 app.get('/Researchapi/Health', function (req, res) {
     //console.log(req.query["keyword"]);
-
+    
     FetchFromFile(res, req.query["search"]);
 })
 
 
 //fething function
 function FetchFromFile(res, key) {
-
     var search = key;
     var allDataset = [];
     fs.readFile('./fulldata.json', 'utf8', function (err, data) {
@@ -44,7 +43,7 @@ function FetchFromFile(res, key) {
         var issearched = false;
         for (var index = 0; index < rows.length; index++) {
             var row = rows[index];
-            if (search != "" && search != undefined) {
+            if (search != "") {
                 for (var i = 0; i < row.keyword.length; i++) {
                     if (row.keyword[i] == search) {
                         issearched = true;
