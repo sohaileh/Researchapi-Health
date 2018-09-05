@@ -7,9 +7,9 @@ const fs = require('fs');
 const app = express();
 
 //server listen
-app.listen(9004, function (req, res) {
+app.listen(3000, function (req, res) {
 });
-console.log("server is listening at port 9004");
+console.log("server is listening at port 3000");
 
 //body parser code middle wares
 app.use(bodyParser.urlencoded({
