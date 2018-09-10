@@ -24,7 +24,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 //making an express object
 const app = express();
 //server listen
-app.listen(3001, function (req, res) {
+app.listen(3000, function (req, res) {
 });
 console.log("server is listening at port 3001");
 
