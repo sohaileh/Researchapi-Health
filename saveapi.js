@@ -45,12 +45,14 @@ app.use(function (req, res, next) {
 app.get('/Researchapi/Health/save', function (req, res) {
     console.log("req came");
     try{
+        
     var query = JSON.parse(JSON.stringify(req.query));
+        if(query.ids!=undefined){
     for (var k = 0; k < query.ids.length; k++) {
         var search = query.ids[k].value;
         searchindb(res, search);
     }
-    }
+    }}
     catch(e){}
     res.status(200).send("");
 })
