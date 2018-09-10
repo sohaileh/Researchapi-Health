@@ -24,7 +24,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 //making an express object
 const app = express();
 //server listen
-app.listen(8890, function (req, res) {
+app.listen(3001, function (req, res) {
 });
 console.log("server is listening at port 3001");
 
@@ -43,7 +43,6 @@ app.use(function (req, res, next) {
 
 //using get route
 app.get('/Researchapi/Health/save', function (req, res) {
-    
     console.log("req came");
 
     var query = JSON.parse(JSON.stringify(req.query));
