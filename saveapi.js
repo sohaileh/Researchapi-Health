@@ -51,7 +51,7 @@ app.get('/Researchapi/Health/save', function (req, res) {
         var search = query.ids[k].value;
         searchindb(res, search);
     }
-
+    res.status(200).send("");
 })
 //------------------------------------------------Getting Data From Our API------------------------------------------------
 function searchindb(res, query) {
