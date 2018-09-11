@@ -10,13 +10,13 @@ var AWSDynamo = require("aws-sdk");
 var awsConfig = {
     "region": "us-east-2",
     "endpoint": "http://s3.us-east-2.amazonaws.com",
-    "accessKeyId": "AKIAJGEYIRJVWD34FNXQ", "secretAccessKey": "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"
+    "accessKeyId": "AKIAIPXWK74C7CDIVTSQ", "secretAccessKey": "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"
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
     "endpoint": "http://dynamodb.us-east-2.amazonaws.com",
-    "accessKeyId": "AKIAJGEYIRJVWD34FNXQ", "secretAccessKey": "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"
+    "accessKeyId": "AKIAIPXWK74C7CDIVTSQ", "secretAccessKey": "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"
 };
 AWS.config.update(awsConfigDynamo);
 var docClient = new AWS.DynamoDB.DocumentClient();
@@ -43,16 +43,17 @@ app.use(function (req, res, next) {
 //using get route
 app.get('/Researchapi/Health/save', function (req, res) {
     console.log("req came");
-    try{
-        
-    var query = JSON.parse(JSON.stringify(req.query));
-        if(query.ids!=undefined){
-    for (var k = 0; k < query.ids.length; k++) {
-        var search = query.ids[k].value;
-        searchindb(res, search);
+    try {
+
+        var query = JSON.parse(JSON.stringify(req.query));
+        if (query.ids) {
+            for (var k = 0; k < query.ids.length; k++) {
+                var search = query.ids[k].value;
+                searchindb(res, search);
+            }
+        }
     }
-    }}
-    catch(e){}
+    catch (e) { }
     res.status(200).send("");
 })
 //------------------------------------------------Getting Data From Our API------------------------------------------------
@@ -73,6 +74,7 @@ function searchindb(res, query) {
             ":identifier": search
         }
     };
+    
     docClient.scan(params, onScan);
 
     function onScan(err, data) {
@@ -163,11 +165,11 @@ function FetchFromFile(res, query) {
             var row = rows[index];
             if (search != "" && search != undefined) {
                 for (var i = 0; i < row.keyword.length; i++) {
-                    if ( row.keyword[i].toLowerCase().indexOf(search.toLowerCase()) !== -1 ) {
+                    if (row.keyword[i].toLowerCase().indexOf(search.toLowerCase()) !== -1) {
                         issearched = true;
                     }
                 }
-                if ( row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1  || row.modified == modifieddateT ) {
+                if (row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1 || row.modified == modifieddateT) {
                     issearched = true;
                 }
                 if (issearched)
