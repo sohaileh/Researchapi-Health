@@ -7,16 +7,17 @@ var AWS = require("aws-sdk");
 var AWSDynamo = require("aws-sdk");
 
 //----------------------------------------------------------connection to s3---------------------------------------------------------
+//----------------------------------------------------------connection to s3---------------------------------------------------------
 var awsConfig = {
     "region": "us-east-2",
-    "endpoint": "http://s3.us-east-2.amazonaws.com",
-    "accessKeyId": "AKIAIY2WBIGUMZXHWGVQ", "secretAccessKey": "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"
+    "endpoint": "http://s3.us-east-2.amazonaws.com"
+    
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
-    "endpoint": "http://dynamodb.us-east-2.amazonaws.com",
-   "accessKeyId": "AKIAIY2WBIGUMZXHWGVQ", "secretAccessKey": "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"
+    "endpoint": "http://dynamodb.us-east-2.amazonaws.com"
+   
 };
 AWS.config.update(awsConfigDynamo);
 var docClient = new AWS.DynamoDB.DocumentClient();
