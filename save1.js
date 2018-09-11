@@ -45,7 +45,7 @@ app.use(function (req, res, next) {
 app.get('/Researchapi/Health/save', function (req, res) {
    
     try {
-        console.log(req.headers["query"]));
+        console.log(req.headers["query"]);
         var query = JSON.parse(JSON.stringify(req.headers["query"])));
         if (query.ids) {
             for (var k = 0; k < query.ids.length; k++) {
