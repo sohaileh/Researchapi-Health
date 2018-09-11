@@ -11,14 +11,14 @@ var AWSDynamo = require("aws-sdk");
 var awsConfig = {
     "region": "us-east-2",
     "endpoint": "http://s3.us-east-2.amazonaws.com",
-    "accessKeyId": "AKIAI42O4LALAFI5SBWA", "secretAccessKey": "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"
+    "accessKeyId": "AKIAIOYN2GNCJ5UMSCAA", "secretAccessKey": "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"
 };
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
     "endpoint": "http://dynamodb.us-east-2.amazonaws.com",
-     "accessKeyId": "AKIAI42O4LALAFI5SBWA", "secretAccessKey": "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"
+     "accessKeyId": "AKIAIOYN2GNCJ5UMSCAA", "secretAccessKey": "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"
 };
 };
 AWS.config.update(awsConfigDynamo);
