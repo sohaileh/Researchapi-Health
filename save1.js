@@ -42,7 +42,7 @@ app.use(function (req, res, next) {
 
 //using get route
 app.get('/Researchapi/Health/save', function (req, res) {
-    console.log("req came");
+   
     try {
 
         var query = JSON.parse(JSON.stringify(req.query));
@@ -58,6 +58,7 @@ app.get('/Researchapi/Health/save', function (req, res) {
 })
 //------------------------------------------------Getting Data From Our API------------------------------------------------
 function searchindb(res, query) {
+       console.log("searchindb");
     var search = query;
     console.log(search);
     var allDataset = [];
@@ -78,6 +79,7 @@ function searchindb(res, query) {
     docClient.scan(params, onScan);
 
     function onScan(err, data) {
+         console.log("Onscan");
         if (err) {
             console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
         } else {
