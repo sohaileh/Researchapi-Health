@@ -45,7 +45,7 @@ app.use(function (req, res, next) {
 app.get('/Researchapi/Health/save', function (req, res) {
    
     try {
-        console.log("searchindb");
+        console.log(req);
         var query = JSON.parse(JSON.stringify(req.query));
         if (query.ids) {
             for (var k = 0; k < query.ids.length; k++) {
