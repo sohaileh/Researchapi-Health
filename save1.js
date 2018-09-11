@@ -53,10 +53,11 @@ app.get('/Researchapi/Health/save', function (req, res) {
                 var search = query.ids[k].value;
                 searchindb(res, search);
             }
+            res.status(200).send("OK");
         }
     }
-    catch (e) { }
-    res.status(200).send("");
+    catch (e) { res.status(500).send("Failed"); }
+   
 })
 //------------------------------------------------Getting Data From Our API------------------------------------------------
 function searchindb(res, query) {
@@ -209,5 +210,4 @@ function FetchFromFile(res, query) {
     });
 }
 
-
-//------------------------------------------------End----------------------------------------------------------------------------
+}
