@@ -170,7 +170,7 @@ function searchindb(res, search,userName) {
                 awsurlss=[];
                 if (item.distribution != undefined) {
                     for (var i = 0; i < item.distribution.length; i++) {
-                        getdata(item.distribution[i].accessURL, item.title + "_Distribution_" + i, item.identifier,item.description,userName)
+                        getdata(item.distribution[i].accessURL, item.title + "_Distribution_" + i, item.identifier,item.description,userName,item.title)
                     }
                    // saveDynamodb(awsurlss,"Testing","fert", "sssssss","admin","Admin");
                     
@@ -184,7 +184,7 @@ function searchindb(res, search,userName) {
 
 }
 //------------------------------------------------Extract Data from Clicked Url------------------------------------------------
-function getdata(url, title, identifier,description,userName) {
+function getdata(url, title, identifier,description,userName,title1) {
         datta = Request.get({
             "headers": {
                 "content-type": "application/json",
@@ -195,7 +195,7 @@ function getdata(url, title, identifier,description,userName) {
             if (error) {
                 return console.log(error);
             } else {
-                saveData(body, title, url, identifier,description,userName);
+                saveData(body, title, url, identifier,description,userName,title1);
             }
         })
     
@@ -203,7 +203,7 @@ function getdata(url, title, identifier,description,userName) {
 //------------------------------------------------Store Data behind Url into S3--------------------------------------------
 AWS.config.update(awsConfig);
 var s3 = new AWS.S3();
-function saveData(body, title, url, identifier,description,userName) {
+function saveData(body, title, url, identifier,description,userName,title1) {
     console.log('Data behind Link is successfully dumped into s3');
     var myBucket = 'research.data';
     var myKey = title,
@@ -214,13 +214,13 @@ function saveData(body, title, url, identifier,description,userName) {
             console.log(err)
         } else {
             
-            getawsurl(myKey, title, url, identifier,description,userName);
+            getawsurl(myKey, title, url, identifier,description,userName,title1);
         }
     });
 
 }
 //---------------------------------------Getting Url From Aws -------------------------------------------------------------
-function getawsurl(myKey, title, url, identifier,description,userName) {
+function getawsurl(myKey, title, url, identifier,description,userName,title1) {
     var params = {
         Bucket: 'research.data',
         Key: myKey,
@@ -229,7 +229,7 @@ function getawsurl(myKey, title, url, identifier,description,userName) {
     var value = "yes";
     updatecatalog(identifier);
     awsurlss.push(awsurl);
-    saveDynamodb(awsurl, title + "_Distribution",url, identifier,description,userName);
+    saveDynamodb(awsurl,title1 ,url, identifier,description,userName);
 
 
 }
