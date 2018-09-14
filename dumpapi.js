@@ -127,10 +127,10 @@ function FetchFroms3link(res, search) {
 app.get('/Researchapi/Health/save', function (req, res) {
     //searchindb(res, req.query["Searchkey"],req.query["userName"]);
     try {
-        console.log(req);
+        console.log(req.headers)
         var query = JSON.parse(req.headers["query"]);
     var userName = JSON.parse(req.headers["username"]);
-        console.log(req.headers)
+        
         if (query.ids) {
             for (var k = 0; k < query.ids.length; k++) {
                 var search = query.ids[k].value;
