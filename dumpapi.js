@@ -134,7 +134,7 @@ app.get('/Researchapi/Health/save', function (req, res) {
         if (query.ids) {
             for (var k = 0; k < query.ids.length; k++) {
                 var search = query.ids[k].value;
-                searchindb(res, search);
+                searchindb(res, search,userName);
             }
             res.status(200).send("OK");
         }
