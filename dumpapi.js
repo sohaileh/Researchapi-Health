@@ -139,7 +139,7 @@ app.get('/Researchapi/Health/save', function (req, res) {
             res.status(200).send("OK");
         }
     }
-    catch (e) { res.status(500).send("Failed"); }
+    catch (e) { res.status(500).send(e); }
 
 })
 //------------------------------------------------Getting Data From Our API------------------------------------------------
