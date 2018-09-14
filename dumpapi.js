@@ -129,7 +129,7 @@ app.get('/Researchapi/Health/save', function (req, res) {
     try {
         console.log(req.headers)
         var query = JSON.parse(req.headers["query"]);
-    var userName = JSON.parse(req.headers["username"]);
+    var userName = req.headers["username"];
         
         if (query.ids) {
             for (var k = 0; k < query.ids.length; k++) {
