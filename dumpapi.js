@@ -110,12 +110,12 @@ function FetchFroms3link(res, search) {
             } else {
                 data.Items.forEach(function(item) {
                     allDataset.push("title:"+item.title);
-                    allDataset.push("Access URL:"+item.AccessUrl);
-                    allDataset.push("Created By:"+item.created_by);
-                    allDataset.push("Created On:"+item.created_on);
+                    allDataset.push("accessUrl:"+item.AccessUrl);
+                    allDataset.push("createdBy:"+item.created_by);
+                    allDataset.push("createdOn:"+item.created_on);
                     allDataset.push("Description:"+item.description);
                     //allDataset.push("Acces"+item.identifier);
-                    allDataset.push("Aws URL:"+item.s3link);
+                    allDataset.push("awsURL:"+item.s3link);
                     //console.log(item.AccessUrl);
                 });
             } 
