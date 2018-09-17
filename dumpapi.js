@@ -348,7 +348,7 @@ function save(req) {
         URLS.push(req.files[i].location)
     }
     var input = {
-        "id": req.files[0].originalname+"_"+req.body.username.toString()+""+(new Date()).toString(),
+        "id": req.files[0].name+"_"+req.body.username.toString()+""+(new Date()).toString(),
         "Username": req.body.username.toString(),
         "title": req.body.title.toString(),
         "Updated_Date": new Date().toString(),
