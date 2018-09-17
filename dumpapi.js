@@ -236,8 +236,9 @@ function getawsurl(myKey, title, url, identifier, description, userName, titlene
         Bucket: 'userresearch.data',
         Key: myKey,
     };
-    awsurl = s3.getSignedUrl('getObject', params);
-    updatecatalog(identifier);
+    awsurl = s3.getSignedUrl('getObject', params).split("?")[0];
+
+updatecatalog(identifier);
     awsurlss.push(awsurl);
     saveDynamodb(awsurl, titlenew, url, identifier, description, userName);
 
