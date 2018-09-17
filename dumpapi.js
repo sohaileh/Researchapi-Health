@@ -149,7 +149,7 @@ app.get('/Researchapi/Health/save', function (req, res) {
     try {
         // console.log(req);
         var query = JSON.parse(req.headers["query"]);
-        var userName = req.headers["username"];
+        var userName = JSON.parse(req.headers["username"]);
         console.log(query)
         if (query.ids) {
             for (var k = 0; k < query.ids.length; k++) {
@@ -258,7 +258,7 @@ let saveDynamodb = function (awsurl, title, url, identifier, description, userNa
     let docClient = new AWS.DynamoDB.DocumentClient();
 
     var input = {
-        "id":title+new Date().toString(),
+        "ID":title+new Date().toString(),
         "title": title, "createdBy": userName, "createdOn": new Date().toString(),
         "updatedBy": userName.toLowerCase(),
         "accessUrl": url,
