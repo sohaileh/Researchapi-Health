@@ -258,6 +258,7 @@ let saveDynamodb = function (awsurl, title, url, identifier, description, userNa
     let docClient = new AWS.DynamoDB.DocumentClient();
 
     var input = {
+              "id":title+new Date().toString(),
         "title": title, "createdBy": userName, "createdOn": new Date().toString(),
         "updatedBy": userName.toLowerCase(),
         "accessUrl": url,
