@@ -355,7 +355,7 @@ function save(req) {
         "Updated_Date": new Date().toString(),
         "View": req.body.view.toString(),
         "S3_Url": URLS,
-        "Metadata_Info_Ids": req.body.metadata_id.toString(),
+        "Metadata_Info_Ids": req.body.metadata_Info_Ids.toString(),
         "comment": req.body.comment.toString()
     };
     var params = {
