@@ -322,7 +322,7 @@ const multerS3Config = multerS3({
     key: function (req, file, cb) {
        
         // console.log(req)
-        cb(null,uuid4 +"_" + file.name)
+        cb(null,uuid4 +"_" + "Test_Colabration")
     }
 });
 //===================================================================
@@ -348,7 +348,7 @@ function save(req) {
         URLS.push(req.files[i].location)
     }
     var input = {
-        "id": req.files[0].name+"_"+req.body.username.toString()+""+(new Date()).toString(),
+        "id": "Test_Colabration_"+req.body.username.toString()+""+(new Date()).toString(),
         "Username": req.body.username.toString(),
         "title": req.body.title.toString(),
         "Updated_Date": new Date().toString(),
