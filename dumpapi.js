@@ -376,8 +376,9 @@ function save(req) {
 }
 //=========================================================User Collaboration Api==========================================================
 ////using get route
-app.get('/Researchapi/Health/Usercollaboration', function (req, res) {
-    FetchFromUserCollaboration(res, req.query["mycollaboration"]);
+app.get('/Researchapi/Health/usercollaboration', function (req, res) {
+    if(req.query["key"]!=undefined){FetchFromUserCollaboration(res, req.query["key"]);}
+    
 });
 //---------------------------------------------------------Fetch From Database--------------------------------------------------------------------
 function FetchFromUserCollaboration(res, search) {
