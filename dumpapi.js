@@ -15,8 +15,7 @@ var awsConfig = {
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
-    "endpoint": "http://dynamodb.us-east-2.amazonaws.com",
-
+    "endpoint": "http://dynamodb.us-east-2.amazonaws.com"
 };
 
 AWS.config.update(awsConfigDynamo);
@@ -136,7 +135,7 @@ function FetchFroms3link(res, search) {
 //---------------------------------------------------------save Api-----------------------------------------------------------------------------
 //using get route
 app.get('/Researchapi/Health/save', function (req, res) {
-    //searchindb(res, req.query["Searchkey"],req.query["userName"]);
+   // searchindb(res, req.query["Searchkey"],req.query["userName"]);
     try {
         // console.log(req);
         var query = JSON.parse(req.headers["query"]);
@@ -180,6 +179,7 @@ function searchindb(res, search, userName) {
             data.Items.forEach(function (item) {
                 awsurlss = [];
                 if (item.distribution != undefined) {
+                    awsurlss = [];
                     for (var i = 0; i < item.distribution.length; i++) {
                         getdata(item.distribution[i].accessURL, item.title + "_Distribution_" + i, item.identifier, item.description, userName, item.title)
                     }
@@ -249,11 +249,11 @@ let saveDynamodb = function (awsurl, title, url, identifier, description, userNa
     let docClient = new AWS.DynamoDB.DocumentClient();
 
     var input = {
-        "ID": title + new Date().toString(),
+        "ID": title+userName,
         "title": title, "createdBy": userName, "createdOn": new Date().toString(),
         "updatedBy": userName.toLowerCase(),
         "accessUrl": url,
-        "awsURL": awsurl,
+        "awsURL": awsurlss,
         "Description": description,
         "identifier": identifier
     };
