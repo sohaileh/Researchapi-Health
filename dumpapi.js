@@ -343,6 +343,7 @@ app.post('/Researchapi/Health/collaboration', upload.any(), function (req, res) 
 //================================================================= save function-----------------------------------------------------------
 
 function save(req) {
+    console.log(req.body);
     var URLS = [];
     for (var i = 0; i < req.files.length; i++) {
         URLS.push(req.files[i].location)
