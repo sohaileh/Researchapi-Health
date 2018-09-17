@@ -303,7 +303,7 @@ function updatecatalog(identifier) {
     });
 }
 //--------------------------------------------Collaboration Api-------------------------------------------------
-//===================================================================
+
 const s3Config = new AWS.S3({
     region: "us-east-2",
     Bucket: "usercollaboration"
@@ -322,7 +322,7 @@ const multerS3Config = multerS3({
     key: function (req, file, cb) {
        
         // console.log(req)
-        cb(null,uuid4 +"_" + file.originalname)
+        cb(null,uuid4 +"_" + file.name)
     }
 });
 //===================================================================
