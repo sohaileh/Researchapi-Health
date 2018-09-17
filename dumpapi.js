@@ -225,7 +225,7 @@ AWS.config.update(awsConfig);
 var s3 = new AWS.S3();
 function saveData(body, title, url, identifier, description, userName) {
     console.log('Data behind Link is successfully dumped into s3');
-    var myBucket = 'Myresearch';
+    var myBucket = 'userresearch.data';
     var myKey = title,
         params = { Bucket: myBucket, Key: myKey, Body: body };
     s3.putObject(params, function (err, data) {
