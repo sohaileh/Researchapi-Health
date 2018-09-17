@@ -5,7 +5,7 @@ const fs = require('fs');
 var AWS = require("aws-sdk");
 var multer = require('multer');
 multerS3 = require('multer-s3');
-const uuidv4= require('uuid/v4');
+const uuidv4 = require('uuid/v4');
 var awsurlss = [];
 //----------------------------------------------------------connection to s3---------------------------------------------------------
 var awsConfig = {
@@ -57,13 +57,13 @@ function FetchFromDatabase(res, query) {
     };
     docClient.scan(params, onScan);
     function onScan(err, data) {
-      
-        
+
+
         if (err) {
             console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-          
-           
+
+
             var rows = data.Items;
             var allDataset = [];
             var issearched = false;
@@ -75,7 +75,7 @@ function FetchFromDatabase(res, query) {
                             issearched = true;
                         }
                     }
-                    if (row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1 ) {
+                    if (row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
                         issearched = true;
                     }
                     if (issearched) {
@@ -89,7 +89,7 @@ function FetchFromDatabase(res, query) {
             else {
                 res.status(200).send(rows);
             }
-            
+
         }
 
     }
@@ -105,42 +105,33 @@ function FetchFroms3link(res, search) {
     console.log(search)
     var allDataset = [];
     var issearched = false;
-    if (search == undefined || search == "") 
-    {
+    if (search == undefined || search == "") {
         res.status(404).send("No Record Found!!")
     }
-    else
-    {
-    var params = {
-        TableName: "UserResearch",
-        FilterExpression: "#K=:createdBy",
-        ExpressionAttributeNames: {
-            "#K": "createdBy"
-        },
-        ExpressionAttributeValues: {
-            ":createdBy": search
+    else {
+        var params = {
+            TableName: "UserResearch",
+            FilterExpression: "#K=:createdBy",
+            ExpressionAttributeNames: {
+                "#K": "createdBy"
+            },
+            ExpressionAttributeValues: {
+                ":createdBy": search
+            }
+        };
+        docClient.scan(params, onScan);
+        function onScan(err, data) {
+            if (err) {
+                console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+            } else {
+                data.Items.forEach(function (item) {
+                    item.source = "healthdata.gov";
+                    allDataset.push(item);
+                });
+            }
+            res.status(200).send(allDataset);
         }
-    };
-    docClient.scan(params, onScan);
-    function onScan(err, data) {
-        if (err) {
-            console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            data.Items.forEach(function (item) {
-                // allDataset.push("title:" + item.title);
-                // allDataset.push("accessUrl:" + item.AccessUrl);
-                // allDataset.push("createdBy:" + item.created_by);
-                // allDataset.push("createdOn:" + item.created_on);
-                // allDataset.push("Description:" + item.description);
-                // allDataset.push("Acces"+item.identifier);
-                // allDataset.push("awsURL:" + item.s3link);
-                // //console.log(item.AccessUrl);
-                allDataset.push(item);
-            });
-        }
-        res.status(200).send(allDataset);
     }
-}
 }
 //---------------------------------------------------------save Api-----------------------------------------------------------------------------
 //using get route
@@ -190,10 +181,10 @@ function searchindb(res, search, userName) {
                 awsurlss = [];
                 if (item.distribution != undefined) {
                     for (var i = 0; i < item.distribution.length; i++) {
-                        getdata(item.distribution[i].accessURL, item.title + "_Distribution_" + i, item.identifier, item.description, userName,item.title )
+                        getdata(item.distribution[i].accessURL, item.title + "_Distribution_" + i, item.identifier, item.description, userName, item.title)
                     }
                     // saveDynamodb(awsurlss,"Testing","fert", "sssssss","admin","Admin");
-                  }
+                }
 
             });
 
@@ -203,7 +194,7 @@ function searchindb(res, search, userName) {
 
 }
 //------------------------------------------------Extract Data from Clicked Url------------------------------------------------
-function getdata(url, title, identifier, description, userName,titlenew) {
+function getdata(url, title, identifier, description, userName, titlenew) {
     datta = Request.get({
         "headers": {
             "content-type": "application/json",
@@ -215,7 +206,7 @@ function getdata(url, title, identifier, description, userName,titlenew) {
             return console.log(error);
         }
         else {
-            saveData(body, title, url, identifier, description, userName,titlenew);
+            saveData(body, title, url, identifier, description, userName, titlenew);
         }
     })
 
@@ -223,7 +214,7 @@ function getdata(url, title, identifier, description, userName,titlenew) {
 //------------------------------------------------Store Data behind Url into S3--------------------------------------------
 AWS.config.update(awsConfig);
 var s3 = new AWS.S3();
-function saveData(body, title, url, identifier, description, userName,titlenew) {
+function saveData(body, title, url, identifier, description, userName, titlenew) {
     console.log('Data behind Link is successfully dumped into s3');
     var myBucket = 'userresearch.data';
     var myKey = title,
@@ -234,13 +225,13 @@ function saveData(body, title, url, identifier, description, userName,titlenew) 
             console.log(err)
         } else {
 
-            getawsurl(myKey, title, url, identifier, description, userName,titlenew);
+            getawsurl(myKey, title, url, identifier, description, userName, titlenew);
         }
     });
 
 }
 //---------------------------------------Getting Url From Aws -------------------------------------------------------------
-function getawsurl(myKey, title, url, identifier, description, userName,titlenew) {
+function getawsurl(myKey, title, url, identifier, description, userName, titlenew) {
     var params = {
         Bucket: 'userresearch.data',
         Key: myKey,
@@ -258,7 +249,7 @@ let saveDynamodb = function (awsurl, title, url, identifier, description, userNa
     let docClient = new AWS.DynamoDB.DocumentClient();
 
     var input = {
-        "ID":title+new Date().toString(),
+        "ID": title + new Date().toString(),
         "title": title, "createdBy": userName, "createdOn": new Date().toString(),
         "updatedBy": userName.toLowerCase(),
         "accessUrl": url,
@@ -320,9 +311,9 @@ const multerS3Config = multerS3({
         });
     },
     key: function (req, file, cb) {
-       
+
         // console.log(req)
-        cb(null,uuid4 +"_" + "Test_Colabration")
+        cb(null, uuid4 + "_" + file.originalname + "_" + (new Date()).toString())
     }
 });
 //===================================================================
@@ -333,11 +324,11 @@ var upload = multer({
 //=======================================================================
 
 app.post('/Researchapi/Health/collaboration', upload.any(), function (req, res) {
- 
-        console.log("file has been successfully uploaded");
-        res.end("successfully-uploaded")
-        save(req)
-    
+
+    console.log("file has been successfully uploaded");
+    res.end("successfully-uploaded")
+    save(req)
+
 });
 
 //================================================================= save function-----------------------------------------------------------
@@ -349,7 +340,7 @@ function save(req) {
         URLS.push(req.files[i].location)
     }
     var input = {
-        "id": "Test_Colabration_"+req.body.username.toString()+""+(new Date()).toString(),
+        "id": req.files[0].originalname + "_" + req.body.username.toString() + "" + (new Date()).toString(),
         "Username": req.body.username.toString(),
         "title": req.body.title.toString(),
         "Updated_Date": new Date().toString(),
@@ -378,8 +369,8 @@ function save(req) {
 //=========================================================User Collaboration Api==========================================================
 ////using get route
 app.get('/Researchapi/Health/usercollaboration', function (req, res) {
-    if(req.query["key"]!=undefined){FetchFromUserCollaboration(res, req.query["key"]);}
-    
+    if (req.query["key"] != undefined) { FetchFromUserCollaboration(res, req.query["key"]); }
+
 });
 //---------------------------------------------------------Fetch From Database--------------------------------------------------------------------
 function FetchFromUserCollaboration(res, search) {
