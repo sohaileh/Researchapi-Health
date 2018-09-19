@@ -10,16 +10,12 @@ var awsurlss = [];
 //----------------------------------------------------------connection to s3---------------------------------------------------------
 var awsConfig = {
     "region": "us-east-2",
-    "endpoint": "http://s3.us-east-2.amazonaws.com",
-    "accessKeyId": "AKIAJN2NIJK54TONTTDA",
-    "secretAccessKey": "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"
+    "endpoint": "http://s3.us-east-2.amazonaws.com"
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
-    "endpoint": "http://dynamodb.us-east-2.amazonaws.com",
-    "accessKeyId": "AKIAJN2NIJK54TONTTDA",
-    "secretAccessKey": "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"
+    "endpoint": "http://dynamodb.us-east-2.amazonaws.com"
 };
 
 AWS.config.update(awsConfigDynamo);
