@@ -11,6 +11,7 @@ var awsurlss = [];
 var awsConfig = {
     "region": "us-east-2",
     "endpoint": "http://s3.us-east-2.amazonaws.com"
+    
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
@@ -79,6 +80,7 @@ function FetchFromDatabase(res, query) {
                         issearched = false;
                     }
                 }
+
                 datafromusercollaboration(search, allDataset)
             }
             else {
@@ -89,6 +91,8 @@ function FetchFromDatabase(res, query) {
     }
     function datafromusercollaboration(search, allDataset) {
         console.log(search);
+        console.log(allDataset);
+
         params = {
             TableName: "UserCollaboration",
         };
@@ -114,8 +118,12 @@ function FetchFromDatabase(res, query) {
                     res.status(200).send(allDataset);
                 }
                 else {
-                    allDataset.push(rowss);
+                    for (var index = 0; index < rowss.length; index++) {
+                        var row = rowss[index];
+                        allDataset.push(row);
+                    }
                     res.status(200).send(allDataset);
+
                 }
 
             }
@@ -123,8 +131,6 @@ function FetchFromDatabase(res, query) {
         }
     }
 }
-
-
 //=============================================================My Research Api===============================================================
 //using get route
 app.get('/Researchapi/Health/myresearch', function (req, res) {
