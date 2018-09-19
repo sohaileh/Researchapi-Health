@@ -385,9 +385,9 @@ function save(req) {
             {
                 "@type": ["environment",
                     "health"],
-                "downloadURL": URLS,
+                "downloadURL": "",
                 "format": "csv",
-                "accessURL": URLS,
+                "accessURL": "",
                 "title": "csv"
             }
         ],
