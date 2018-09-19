@@ -11,12 +11,14 @@ var awsurlss = [];
 var awsConfig = {
     "region": "us-east-2",
     "endpoint": "http://s3.us-east-2.amazonaws.com"
+   
     
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
     "endpoint": "http://dynamodb.us-east-2.amazonaws.com"
+   
 };
 
 AWS.config.update(awsConfigDynamo);
@@ -370,7 +372,7 @@ app.post('/Researchapi/Health/collaboration', upload.any(), function (req, res) 
 //================================================================= save function-----------------------------------------------------------
 
 function save(req) {
-    console.log(req.body);
+   //console.log(req.body);
     var URLS = [];
     for (var i = 0; i < req.files.length; i++) {
         URLS.push(req.files[i].location)
@@ -383,11 +385,10 @@ function save(req) {
         "description": req.body.comment.toString(),
         "distribution": [
             {
-                "@type": ["environment",
-                    "health"],
-                "downloadURL": "",
+                "@type":"health",
+                "downloadURL": URLS[0].toString(),
                 "format": "csv",
-                "accessURL": "",
+                "accessURL": URLS[0].toString(),
                 "title": "csv"
             }
         ],
