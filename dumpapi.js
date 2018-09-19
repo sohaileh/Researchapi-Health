@@ -10,12 +10,16 @@ var awsurlss = [];
 //----------------------------------------------------------connection to s3---------------------------------------------------------
 var awsConfig = {
     "region": "us-east-2",
-    "endpoint": "http://s3.us-east-2.amazonaws.com"
+    "endpoint": "http://s3.us-east-2.amazonaws.com",
+    "accessKeyId": "AKIAJN2NIJK54TONTTDA",
+    "secretAccessKey": "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"
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
-    "endpoint": "http://dynamodb.us-east-2.amazonaws.com"
+    "endpoint": "http://dynamodb.us-east-2.amazonaws.com",
+    "accessKeyId": "AKIAJN2NIJK54TONTTDA",
+    "secretAccessKey": "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"
 };
 
 AWS.config.update(awsConfigDynamo);
@@ -114,6 +118,7 @@ function FetchFromDatabase(res, query) {
                     res.status(200).send(allDataset);
                 }
                 else {
+                    allDataset.push(rowss);
                     res.status(200).send(allDataset);
                 }
 
@@ -490,6 +495,6 @@ function addUserComments(ID, username, comment) {
             console.log("Comments column successfully updated");
         }
     });
-console.log("end");
+
 }
 //======================================================================End=========================================================
