@@ -490,6 +490,6 @@ function addUserComments(ID, username, comment) {
             console.log("Comments column successfully updated");
         }
     });
-
+console.log("end");
 }
 //======================================================================End=========================================================
