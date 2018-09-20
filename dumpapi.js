@@ -569,7 +569,7 @@ app.post('/Researchapi/Health/Collabration/Comment', function (req, res) {
         var key = req.body.key;
         var username = req.body.username;
         var comment = req.body.comment;
-        addUserComments(key, user, comment);
+        addUserComments(key, username, comment);
     }
     res.status(200).send("comment saved successfully");
 });
