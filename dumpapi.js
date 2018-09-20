@@ -7,18 +7,18 @@ var multer = require('multer');
 multerS3 = require('multer-s3');
 const uuidv4 = require('uuid/v4');
 var awsurlss = [];
+
+var Keywords = [];
 //----------------------------------------------------------connection to s3---------------------------------------------------------
 var awsConfig = {
     "region": "us-east-2",
     "endpoint": "http://s3.us-east-2.amazonaws.com"
-   
-    
+
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
     "endpoint": "http://dynamodb.us-east-2.amazonaws.com"
-   
 };
 
 AWS.config.update(awsConfigDynamo);
@@ -44,7 +44,7 @@ app.use(function (req, res, next) {
 //=====================================================HealthApi=========================================================
 ////using get route
 app.get('/Researchapi/Health', function (req, res) {
-
+    console.log(req.query["Searchkey"]);
     FetchFromDatabase(res, req.query);
 });
 //fething function
@@ -52,6 +52,7 @@ app.get('/Researchapi/Health', function (req, res) {
 function FetchFromDatabase(res, query) {
     var search = query["Searchkey"];
     var allDataset = [];
+    Keywords = [];
     var allDatasets = [];
     var issearched = false;
     var params;
@@ -64,6 +65,12 @@ function FetchFromDatabase(res, query) {
             console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
         } else {
             var rows = data.Items;
+            for (var index = 0; index < rows.length; index++) {
+                var row = rows[index];
+                for (var i = 0; i < row.keyword.length; i++) {
+                    Keywords.push(row.keyword[i]);
+                }
+            }
             var allDataset = [];
             var issearched = false;
             if (search != "" && search != undefined) {
@@ -74,27 +81,28 @@ function FetchFromDatabase(res, query) {
                             issearched = true;
                         }
                     }
-                    if (row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                    if (row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1 || row.description.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
                         issearched = true;
                     }
                     if (issearched) {
+                        row.source = "healthdata.gov";
                         allDataset.push(row);
                         issearched = false;
                     }
                 }
-
-                datafromusercollaboration(search, allDataset)
             }
             else {
                 allDataset = rows;
-                datafromusercollaboration(search, allDataset)
+                for (var index = 0; index < allDataset.length; index++) {
+                    allDataset[index].source = "healthdata.gov";
+                }
             }
+            //CALL TO USER COLLABORATION TABLE
+            datafromusercollaboration(search, allDataset, res)
         }
     }
-    function datafromusercollaboration(search, allDataset) {
-        console.log(search);
-       // console.log(allDataset);
-
+    //===========================================================PRINTS DATA FROM USER COLLABORATION================================================
+    function datafromusercollaboration(search, allDataset, res) {
         params = {
             TableName: "UserCollaboration",
         };
@@ -104,34 +112,124 @@ function FetchFromDatabase(res, query) {
                 console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
             } else {
                 var rowss = data.Items;
+                for (var index = 0; index < rowss.length; index++) {
+                    var row = rowss[index];
+                    for (var i = 0; i < row.keyword.length; i++) {
+                        Keywords.push(row.keyword[i]);
+                    }
+                }
                 var issearched = false;
                 if (search != "" && search != undefined) {
                     for (var index = 0; index < rowss.length; index++) {
                         var row = rowss[index];
-
-                        if (row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                        if (row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1 || row.description.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
                             issearched = true;
                         }
                         if (issearched) {
+                            row.source = "published data";
                             allDataset.push(row);
                             issearched = false;
                         }
                     }
-                    res.status(200).send(allDataset);
                 }
                 else {
                     for (var index = 0; index < rowss.length; index++) {
+
                         var row = rowss[index];
+                        row.source = "Publisher";
                         allDataset.push(row);
                     }
-                    res.status(200).send(allDataset);
+
 
                 }
-
+                //CALL TO CMS.GOV API
+                datafromCMSGOV(search, allDataset, res)
             }
 
         }
     }
+}
+//===================================================================PRINTS DATA FROM CMS API========================================================
+function datafromCMSGOV(search, allDataset, res) {
+    console.log("I am in CMS GOV ##############");
+    params = {
+        TableName: "TestHealth",
+    };
+    docClient.scan(params, onScan);
+    function onScan(err, data) {
+        if (err) {
+            console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            var rowss = data.Items;
+            for (var index = 0; index < rowss.length; index++) {
+                var row = rowss[index];
+                for (var i = 0; i < row.keyword.length; i++) {
+                    Keywords.push(row.keyword[i]);
+                }
+            }
+            var issearched = false;
+            if (search != "" && search != undefined) {
+                for (var index = 0; index < rowss.length; index++) {
+                    var row = rowss[index];
+                    for (var i = 0; i < row.keyword.length; i++) {
+                        if (row.keyword[i].toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                            issearched = true;
+                        }
+                    }
+                    console.log(search);
+                    if (row.title.toLowerCase().indexOf(search.toLowerCase()) !== -1 || row.description.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                        issearched = true;
+                    }
+                    if (issearched) {
+                        row.source = "data.cms.gov";
+                        allDataset.push(row);
+                        issearched = false;
+                    }
+                }
+
+            }
+            else {
+                for (var index = 0; index < rowss.length; index++) {
+                    var row = rowss[index];
+                    row.source = "data.cms.gov";
+                    allDataset.push(row);
+                }
+
+            }
+            if (allDataset.length > 0)
+                allDataset[allDataset.length - 1].KeywordCount = countoccurences(Keywords)
+            res.status(200).send(allDataset);
+
+        }
+
+    }
+}
+//===============================================================COUNT KEYWORDS IN API================================================================
+function countoccurences(allDataset) {
+    //var fullnames = ['sohail', 'omerr', 'sohail', 'lubaid', 'omer', 'sohail', 'omer', 'lubaid', 'lubaid', 'sohail', 'sohail'];
+    var occurences = {};
+
+    for (var i = 0; i < allDataset.length; i++) {
+        if (typeof occurences[allDataset[i]] == "undefined") {
+            occurences[allDataset[i]] = 1;
+        } else {
+            occurences[allDataset[i]]++;
+        }
+    }
+    return sortMapByValue(occurences);
+}
+//SORT FUNCTION
+function sortMapByValue(map) {
+    var tupleArray = [];
+    var result = {};
+    for (var key in map) tupleArray.push([key, map[key]]);
+    tupleArray.sort(function (a, b) {
+        return b[1] - a[1]
+    });
+    for (var i = 0; i < 10; i++) {
+        result[tupleArray[i][0]] = tupleArray[i][1]
+    }
+    return result;
 }
 //=============================================================My Research Api===============================================================
 //using get route
@@ -211,7 +309,7 @@ function searchindb(res, search, userName) {
     docClient.scan(params, onScan);
 
     function onScan(err, data) {
-        //console.log("Onscan");
+        console.log("Onscan");
         if (err) {
             console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
         } else {
@@ -372,7 +470,7 @@ app.post('/Researchapi/Health/collaboration', upload.any(), function (req, res) 
 //================================================================= save function-----------------------------------------------------------
 
 function save(req) {
-   //console.log(req.body);
+    //console.log(req.body);
     var URLS = [];
     for (var i = 0; i < req.files.length; i++) {
         URLS.push(req.files[i].location)
@@ -385,7 +483,7 @@ function save(req) {
         "description": req.body.comment.toString(),
         "distribution": [
             {
-                "@type":"health",
+                "@type": "health",
                 "downloadURL": URLS[0].toString(),
                 "format": "csv",
                 "accessURL": URLS[0].toString(),
@@ -469,7 +567,7 @@ function FetchFromUserCollaboration(res, search) {
 app.post('/Researchapi/Health/Collabration/Comment', function (req, res) {
     if (req.body.key != undefined || req.body.key != "") {
         var key = req.body.key;
-        var user = req.body.user;
+        var username = req.body.username;
         var comment = req.body.comment;
         addUserComments(key, user, comment);
     }
@@ -477,7 +575,7 @@ app.post('/Researchapi/Health/Collabration/Comment', function (req, res) {
 });
 function addUserComments(ID, username, comment) {
 
-    var usercoments = [{ "username": username, "coment": comment, "DateComment": new Date().toString() }];
+    var usercoments = [{ "username": username, "comment": comment, "commentDate": new Date().toString() }];
     AWS.config.update(awsConfigDynamo);
     let docClient = new AWS.DynamoDB.DocumentClient();
     var params = {
