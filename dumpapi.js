@@ -586,7 +586,7 @@ function addUserComments(ID, username, comment) {
         UpdateExpression: "SET #usercomments= list_append(#usercomments, :label) ",
         ExpressionAttributeNames: { "#usercomments": "usercomments" },
         ExpressionAttributeValues: {
-            ":label": usercoments,
+            ":label": usercomments,
         }, ReturnValues: "UPDATED_NEW"
     };
     docClient.update(params, function (err, data) {
