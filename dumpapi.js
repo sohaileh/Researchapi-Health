@@ -575,7 +575,7 @@ app.post('/Researchapi/Health/Collabration/Comment', function (req, res) {
 });
 function addUserComments(ID, username, comment) {
 
-    var usercoments = [{ "username": username, "comment": comment, "commentDate": new Date().toString() }];
+    var usercomments = [{ "username": username, "comment": comment, "commentDate": new Date().toString() }];
     AWS.config.update(awsConfigDynamo);
     let docClient = new AWS.DynamoDB.DocumentClient();
     var params = {
