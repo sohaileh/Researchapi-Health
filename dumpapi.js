@@ -67,6 +67,7 @@ function FetchFromDatabase(res, query) {
             var rows = data.Items;
             for (var index = 0; index < rows.length; index++) {
                 var row = rows[index];
+				row.KeywordCount={};
                 for (var i = 0; i < row.keyword.length; i++) {
                     Keywords.push(row.keyword[i]);
                 }
@@ -114,6 +115,7 @@ function FetchFromDatabase(res, query) {
                 var rowss = data.Items;
                 for (var index = 0; index < rowss.length; index++) {
                     var row = rowss[index];
+					row.KeywordCount={};
                     for (var i = 0; i < row.keyword.length; i++) {
                         Keywords.push(row.keyword[i]);
                     }
@@ -163,6 +165,7 @@ function datafromCMSGOV(search, allDataset, res) {
             var rowss = data.Items;
             for (var index = 0; index < rowss.length; index++) {
                 var row = rowss[index];
+				row.KeywordCount={};
                 for (var i = 0; i < row.keyword.length; i++) {
                     Keywords.push(row.keyword[i]);
                 }
@@ -192,6 +195,7 @@ function datafromCMSGOV(search, allDataset, res) {
                 for (var index = 0; index < rowss.length; index++) {
                     var row = rowss[index];
                     row.source = "data.cms.gov";
+					
                     allDataset.push(row);
                 }
 
