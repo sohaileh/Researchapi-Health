@@ -12,13 +12,15 @@ var Keywords = [];
 //----------------------------------------------------------connection to s3---------------------------------------------------------
 var awsConfig = {
     "region": "us-east-2",
-    "endpoint": "http://s3.us-east-2.amazonaws.com"
+    "endpoint": "http://s3.us-east-2.amazonaws.com",
+
 
 };
 //----------------------------------------------------------connection to DynamoDb---------------------------------------------------------
 let awsConfigDynamo = {
     "region": "us-east-2",
-    "endpoint": "http://dynamodb.us-east-2.amazonaws.com"
+    "endpoint": "http://dynamodb.us-east-2.amazonaws.com",
+    
 };
 
 AWS.config.update(awsConfigDynamo);
@@ -67,7 +69,7 @@ function FetchFromDatabase(res, query) {
             var rows = data.Items;
             for (var index = 0; index < rows.length; index++) {
                 var row = rows[index];
-				row.KeywordCount={};
+                row.KeywordCount = {};
                 for (var i = 0; i < row.keyword.length; i++) {
                     Keywords.push(row.keyword[i]);
                 }
@@ -115,7 +117,7 @@ function FetchFromDatabase(res, query) {
                 var rowss = data.Items;
                 for (var index = 0; index < rowss.length; index++) {
                     var row = rowss[index];
-					row.KeywordCount={};
+                    row.KeywordCount = {};
                     for (var i = 0; i < row.keyword.length; i++) {
                         Keywords.push(row.keyword[i]);
                     }
@@ -165,7 +167,7 @@ function datafromCMSGOV(search, allDataset, res) {
             var rowss = data.Items;
             for (var index = 0; index < rowss.length; index++) {
                 var row = rowss[index];
-				row.KeywordCount={};
+                row.KeywordCount = {};
                 for (var i = 0; i < row.keyword.length; i++) {
                     Keywords.push(row.keyword[i]);
                 }
@@ -195,7 +197,7 @@ function datafromCMSGOV(search, allDataset, res) {
                 for (var index = 0; index < rowss.length; index++) {
                     var row = rowss[index];
                     row.source = "data.cms.gov";
-					
+
                     allDataset.push(row);
                 }
 
@@ -276,7 +278,7 @@ function FetchFroms3link(res, search) {
 //---------------------------------------------------------save Api-----------------------------------------------------------------------------
 //using get route
 app.get('/Researchapi/Health/save', function (req, res) {
-    // searchindb(res, req.query["Searchkey"],req.query["userName"]);
+    //  searchindb(res, req.query["Searchkey"],req.query["userName"]);
     try {
         // console.log(req);
         var query = JSON.parse(req.headers["query"]);
@@ -322,8 +324,10 @@ function searchindb(res, search, userName) {
                 if (item.distribution != undefined) {
                     awsurlss = [];
                     for (var i = 0; i < item.distribution.length; i++) {
-                        getdata(item.distribution[i].accessURL, item.title + "_Distribution_" + i, item.identifier, item.description, userName, item.title)
+                        if (item.distribution[i].title == "csv")
+                            getdata(item.distribution[i].accessURL, item.title + "_Distribution_" + i, item.identifier, item.description, userName, item.title, item.distribution[i].title)
                     }
+
                     // saveDynamodb(awsurlss,"Testing","fert", "sssssss","admin","Admin");
                 }
 
@@ -334,7 +338,9 @@ function searchindb(res, search, userName) {
 
 }
 //------------------------------------------------Extract Data from Clicked Url------------------------------------------------
-function getdata(url, title, identifier, description, userName, titlenew) {
+function getdata(url, title, identifier, description, userName, titlenew, format) {
+
+    console.log(url);
     datta = Request.get({
         "headers": {
             "content-type": "application/json",
@@ -346,7 +352,7 @@ function getdata(url, title, identifier, description, userName, titlenew) {
             return console.log(error);
         }
         else {
-            saveData(body, title, url, identifier, description, userName, titlenew);
+            saveData(body, title, url, identifier, description, userName, titlenew, format);
         }
     })
 
@@ -354,10 +360,12 @@ function getdata(url, title, identifier, description, userName, titlenew) {
 //------------------------------------------------Store Data behind Url into S3--------------------------------------------
 AWS.config.update(awsConfig);
 var s3 = new AWS.S3();
-function saveData(body, title, url, identifier, description, userName, titlenew) {
+function saveData(body, title, url, identifier, description, userName, titlenew, format) {
+    console.log(format + "++++++" + url);
+
     console.log('Data behind Link is successfully dumped into s3');
     var myBucket = 'userresearch.data';
-    var myKey = title,
+    var myKey = title + "." + format,
         params = { Bucket: myBucket, Key: myKey, Body: body };
     s3.putObject(params, function (err, data) {
 
@@ -365,13 +373,13 @@ function saveData(body, title, url, identifier, description, userName, titlenew)
             console.log(err)
         } else {
 
-            getawsurl(myKey, title, url, identifier, description, userName, titlenew);
+            getawsurl(myKey, title, url, identifier, description, userName, titlenew, format);
         }
     });
 
 }
 //---------------------------------------Getting Url From Aws -------------------------------------------------------------
-function getawsurl(myKey, title, url, identifier, description, userName, titlenew) {
+function getawsurl(myKey, title, url, identifier, description, userName, titlenew, format) {
     var params = {
         Bucket: 'userresearch.data',
         Key: myKey,
